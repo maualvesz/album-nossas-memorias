@@ -8,18 +8,32 @@ const COLLECTION_NAME = 'photos';
 let cachedClient = null;
 
 async function connectToDatabase() {
-  if (cachedClient) {
+  if (cachedClient && cachedClient.topology && cachedClient.topology.isConnected()) {
     return cachedClient;
   }
 
-  const client = new MongoClient(MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  if (!MONGODB_URI) {
+    throw new Error('MONGODB_URI não está configurada nas variáveis de ambiente');
+  }
 
-  await client.connect();
-  cachedClient = client;
-  return client;
+  try {
+    const client = new MongoClient(MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
+
+    await client.connect();
+    console.log('Conectado ao MongoDB com sucesso');
+    cachedClient = client;
+    return client;
+  } catch (error) {
+    console.error('Erro ao conectar ao MongoDB:', error.message);
+    cachedClient = null;
+    throw new Error(`Falha ao conectar ao MongoDB: ${error.message}`);
+  }
 }
 
 async function getPhotos() {
@@ -103,6 +117,9 @@ async function deletePhoto(photoId) {
 }
 
 exports.handler = async (event, context) => {
+  // Permitir que a função continue rodando após a resposta
+  context.callbackWaitsForEmptyEventLoop = false;
+
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -132,13 +149,32 @@ exports.handler = async (event, context) => {
       };
     } else if (event.httpMethod === 'POST') {
       // POST - Adicionar nova foto
-      const { src, date, caption } = JSON.parse(event.body);
+      if (!event.body) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: 'Corpo da requisição vazio' }),
+        };
+      }
+
+      let photoData;
+      try {
+        photoData = JSON.parse(event.body);
+      } catch (e) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: 'JSON inválido' }),
+        };
+      }
+
+      const { src, date, caption } = photoData;
       
       if (!src || !date || !caption) {
         return {
           statusCode: 400,
           headers,
-          body: JSON.stringify({ error: 'Dados incompletos' }),
+          body: JSON.stringify({ error: 'Dados incompletos: src, date e caption são obrigatórios' }),
         };
       }
 
@@ -150,8 +186,8 @@ exports.handler = async (event, context) => {
       };
     } else if (event.httpMethod === 'PUT') {
       // PUT - Editar foto
-      const { id } = event.queryStringParameters || {};
-      const { src, date, caption } = JSON.parse(event.body);
+      const queryParams = event.queryStringParameters || {};
+      const { id } = queryParams;
 
       if (!id) {
         return {
@@ -161,6 +197,27 @@ exports.handler = async (event, context) => {
         };
       }
 
+      if (!event.body) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: 'Corpo da requisição vazio' }),
+        };
+      }
+
+      let photoData;
+      try {
+        photoData = JSON.parse(event.body);
+      } catch (e) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: 'JSON inválido' }),
+        };
+      }
+
+      const { src, date, caption } = photoData;
+
       await updatePhoto(id, { src, date, caption });
       response = {
         statusCode: 200,
@@ -169,7 +226,8 @@ exports.handler = async (event, context) => {
       };
     } else if (event.httpMethod === 'DELETE') {
       // DELETE - Excluir foto
-      const { id } = event.queryStringParameters || {};
+      const queryParams = event.queryStringParameters || {};
+      const { id } = queryParams;
 
       if (!id) {
         return {
@@ -195,11 +253,14 @@ exports.handler = async (event, context) => {
 
     return response;
   } catch (error) {
-    console.error('Erro:', error);
+    console.error('Erro na função:', error);
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: error.message }),
+      body: JSON.stringify({ 
+        error: error.message || 'Erro interno do servidor',
+        details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      }),
     };
   }
 };

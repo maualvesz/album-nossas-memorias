@@ -4,6 +4,7 @@ let allPhotos = [];
 let currentIndex = 0;
 let editIndex = -1;
 let newImageSrc = null;
+let useLocalStorage = false;
 
 // ========== CARREGAMENTO DE DADOS ==========
 async function loadPhotos() {
@@ -11,13 +12,31 @@ async function loadPhotos() {
         const response = await fetch(API_URL);
         if (response.ok) {
             allPhotos = await response.json();
+            useLocalStorage = false;
         } else {
-            console.error('Erro ao carregar fotos:', response.statusText);
+            console.warn('API não disponível, usando localStorage');
+            loadPhotosFromLocalStorage();
+            useLocalStorage = true;
         }
     } catch (error) {
-        console.error('Erro ao carregar fotos:', error);
+        console.warn('API não disponível, usando localStorage:', error);
+        loadPhotosFromLocalStorage();
+        useLocalStorage = true;
     }
     renderPhotos();
+}
+
+function loadPhotosFromLocalStorage() {
+    const savedPhotos = localStorage.getItem('album_photos');
+    if (savedPhotos) {
+        allPhotos = JSON.parse(savedPhotos);
+    } else {
+        allPhotos = [];
+    }
+}
+
+function savePhotosToLocalStorage() {
+    localStorage.setItem('album_photos', JSON.stringify(allPhotos));
 }
 
 // ========== RENDERIZAÇÃO ==========
@@ -156,30 +175,60 @@ async function savePhoto() {
     btnSave.disabled = true;
 
     try {
-        let response;
-        if (editIndex === -1) {
-            // Adicionar nova
-            response = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ src: newImageSrc, date, caption })
-            });
-        } else {
-            // Editar existente
-            const photoId = allPhotos[editIndex].id;
-            response = await fetch(`${API_URL}?id=${photoId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ src: newImageSrc, date, caption })
-            });
-        }
-
-        if (response.ok) {
+        if (useLocalStorage) {
+            // Usar localStorage
+            const { v4: uuidv4 } = { v4: () => 'photo_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9) };
+            
+            if (editIndex === -1) {
+                // Adicionar nova
+                allPhotos.unshift({ 
+                    id: uuidv4(), 
+                    src: newImageSrc, 
+                    date, 
+                    caption,
+                    createdAt: new Date().toISOString()
+                });
+            } else {
+                // Editar existente
+                allPhotos[editIndex] = { 
+                    ...allPhotos[editIndex],
+                    src: newImageSrc, 
+                    date, 
+                    caption,
+                    updatedAt: new Date().toISOString()
+                };
+            }
+            
+            savePhotosToLocalStorage();
             await loadPhotos();
             closeModal('formModal');
         } else {
-            const error = await response.json();
-            alert('Erro ao salvar foto: ' + (error.error || 'Tente novamente'));
+            // Usar API
+            let response;
+            if (editIndex === -1) {
+                // Adicionar nova
+                response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ src: newImageSrc, date, caption })
+                });
+            } else {
+                // Editar existente
+                const photoId = allPhotos[editIndex].id;
+                response = await fetch(`${API_URL}?id=${photoId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ src: newImageSrc, date, caption })
+                });
+            }
+
+            if (response.ok) {
+                await loadPhotos();
+                closeModal('formModal');
+            } else {
+                const error = await response.json();
+                alert('Erro ao salvar foto: ' + (error.error || 'Tente novamente'));
+            }
         }
     } catch (error) {
         console.error('Erro ao salvar foto:', error);
@@ -193,15 +242,23 @@ async function savePhoto() {
 async function deletePhoto(photoId) {
     if (confirm('Tem certeza que deseja excluir esta memória? 🌹')) {
         try {
-            const response = await fetch(`${API_URL}?id=${photoId}`, {
-                method: 'DELETE'
-            });
-
-            if (response.ok) {
+            if (useLocalStorage) {
+                // Usar localStorage
+                allPhotos = allPhotos.filter(p => p.id !== photoId);
+                savePhotosToLocalStorage();
                 await loadPhotos();
             } else {
-                const error = await response.json();
-                alert('Erro ao excluir foto: ' + (error.error || 'Tente novamente'));
+                // Usar API
+                const response = await fetch(`${API_URL}?id=${photoId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    await loadPhotos();
+                } else {
+                    const error = await response.json();
+                    alert('Erro ao excluir foto: ' + (error.error || 'Tente novamente'));
+                }
             }
         } catch (error) {
             console.error('Erro ao excluir foto:', error);
