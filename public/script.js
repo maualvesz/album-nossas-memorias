@@ -101,6 +101,17 @@ function nextPhoto() {
     updateViewModal();
 }
 
+// ========== DOWNLOAD DE FOTO ==========
+function downloadPhoto() {
+    const photo = allPhotos[currentIndex];
+    const link = document.createElement('a');
+    link.href = photo.src;
+    link.download = `foto_${photo.date.replace(/\s+/g, '_')}.jpg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 // ========== MODAIS (ADICIONAR/EDITAR) ==========
 function openAddModal() {
     editIndex = -1;
