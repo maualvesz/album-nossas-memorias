@@ -546,24 +546,34 @@ body::before {
     pointer-events: all;
 }
 
-.modal-inner, .add-modal-inner {
-    max-width: 800px;
+.modal-inner {
+    max-width: 600px;
     width: 100%;
     text-align: center;
     transform: scale(0.9);
     transition: transform 0.4s ease;
-    background: white;
+    background: transparent;
     border-radius: 2px;
-    padding: 2rem;
-}
-
-.modal.open .modal-inner, .add-modal.open .add-modal-inner {
-    transform: scale(1);
+    padding: 0;
 }
 
 .add-modal-inner {
     max-width: 500px;
+    width: 100%;
     text-align: left;
+    background: white;
+    border-radius: 2px;
+    padding: 2rem;
+    transform: scale(0.9);
+    transition: transform 0.4s ease;
+}
+
+.modal.open .modal-inner {
+    transform: scale(1);
+}
+
+.add-modal.open .add-modal-inner {
+    transform: scale(1);
 }
 
 .modal-img {
@@ -571,22 +581,26 @@ body::before {
     max-height: 70vh;
     object-fit: contain;
     border-radius: 2px;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    display: block;
 }
 
 .modal-date {
-    font-size: 0.8rem;
-    letter-spacing: 0.2rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.3rem;
     text-transform: uppercase;
     color: var(--gold);
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
 }
 
 .modal-caption {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     font-style: italic;
-    color: var(--text);
+    color: #fff;
     text-align: center;
+    margin-bottom: 2rem;
+    line-height: 1.6;
 }
 
 .modal-close {
@@ -608,24 +622,28 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
-    margin-top: 1.5rem;
+    gap: 2rem;
+    margin-top: 0;
 }
 
 .modal-nav button {
-    background: rgba(200,99,122,0.2);
-    border: 1px solid rgba(200,99,122,0.4);
+    background: none;
+    border: 1px solid rgba(200,99,122,0.5);
     color: #fff;
-    padding: 0.6rem 1.5rem;
+    padding: 0.7rem 1.8rem;
     font-family: 'Cormorant Garamond', serif;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     letter-spacing: 0.1rem;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.3s;
     border-radius: 1px;
 }
 
-.modal-nav button:hover { background: rgba(200,99,122,0.4); }
+.modal-nav button:hover { 
+    border-color: var(--rose);
+    color: var(--rose);
+    background: rgba(200,99,122,0.1);
+}
 
 /* ========== ADD MODAL ========== */
 .add-modal-inner h3 {
