@@ -8,10 +8,14 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Petalas Animadas -->
+
+    <!-- Pétalas animadas -->
     <div class="petals-container" id="petals"></div>
 
-    <!-- Hero Section -->
+    <!-- Toast de feedback -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ── HERO ─────────────────────────────────────────── -->
     <section class="hero">
         <div class="hero-ornament">✦ ✦ ✦</div>
         <p class="hero-subtitle">Nossa história de amor</p>
@@ -28,14 +32,14 @@
         </div>
     </section>
 
-    <!-- Album Section -->
+    <!-- ── ÁLBUM ─────────────────────────────────────────── -->
     <section class="album-section">
         <div class="section-header">
             <h2>Nosso <em>Álbum</em></h2>
             <p>Cada instante, eternamente guardado aqui ✨</p>
         </div>
 
-        <!-- Controles: Busca por mês + Filtro de ordenação -->
+        <!-- Filtros -->
         <div class="controls-bar">
             <div class="search-month">
                 <label for="filterMonth">🔍 Filtrar por mês:</label>
@@ -45,35 +49,35 @@
             <div class="sort-controls">
                 <label>Ordenar:</label>
                 <button class="btn-sort active" id="btnNewest" onclick="setSortOrder('newest')">Mais recentes</button>
-                <button class="btn-sort" id="btnOldest" onclick="setSortOrder('oldest')">Mais antigas</button>
+                <button class="btn-sort"        id="btnOldest" onclick="setSortOrder('oldest')">Mais antigas</button>
             </div>
         </div>
 
         <div class="photo-grid" id="photoGrid"></div>
     </section>
 
-    <!-- Footer -->
+    <!-- ── FOOTER ────────────────────────────────────────── -->
     <footer>
         <span class="heart">💕</span>
         <p>Cada dia ao seu lado é um presente que nunca vou esquecer.</p>
-        <button onclick="logout()" style="margin-top: 1rem; background: rgba(200,99,122,0.2); border: 1px solid rgba(200,99,122,0.4); color: var(--text-light); padding: 0.5rem 1rem; font-family: 'Cormorant Garamond', serif; cursor: pointer; border-radius: 1px; transition: all 0.2s;" onmouseover="this.style.background='rgba(200,99,122,0.3)'; this.style.color='var(--rose)'" onmouseout="this.style.background='rgba(200,99,122,0.2)'; this.style.color='var(--text-light)'">🚪 Sair</button>
+        <button class="btn-logout" onclick="logout()">🚪 Sair</button>
     </footer>
 
-    <!-- Botão Flutuante (FAB) -->
+    <!-- ── FAB ───────────────────────────────────────────── -->
     <button class="fab-btn" onclick="openAddModal()" title="Adicionar foto ou vídeo">
         <span class="fab-icon">+</span>
         <span class="fab-label">Adicionar</span>
     </button>
 
-    <!-- Modal Visualizar Foto/Vídeo -->
+    <!-- ── MODAL: Visualizar ─────────────────────────────── -->
     <div class="modal" id="viewModal">
         <button class="modal-close" onclick="closeModal('viewModal')">✕</button>
         <div class="modal-inner">
-            <div id="modal-media-container">
-                <img id="modal-img" class="modal-img" src="" alt="" style="display:none;">
-                <video id="modal-video" class="modal-img" controls style="display:none;"></video>
+            <div class="modal-media-wrap">
+                <img    id="modal-img"   class="modal-media" src="" alt="" style="display:none;">
+                <video  id="modal-video" class="modal-media" controls      style="display:none;"></video>
             </div>
-            <p class="modal-date" id="modal-date"></p>
+            <p class="modal-date"    id="modal-date"></p>
             <p class="modal-caption" id="modal-caption"></p>
             <div class="modal-nav">
                 <button onclick="prevPhoto()">← Anterior</button>
@@ -83,37 +87,40 @@
         </div>
     </div>
 
-    <!-- Modal Adicionar/Editar -->
+    <!-- ── MODAL: Adicionar / Editar ────────────────────── -->
     <div class="add-modal" id="formModal">
         <div class="add-modal-inner">
             <h3 id="formTitle">Nova <em>Memória</em></h3>
-            <p id="formSubtitle">Adicione uma foto ou vídeo especial ao nosso álbum</p>
-            
+            <p  id="formSubtitle">Adicione uma foto ou vídeo especial ao nosso álbum</p>
+
+            <!-- Área de upload -->
             <div class="upload-area" onclick="document.getElementById('fileInput').click()">
                 <div id="preview-container">
-                    <img id="preview-img" src="" alt="Preview" style="display:none;">
-                    <video id="preview-video" controls style="display:none; max-width:100%; max-height:300px; border-radius:2px;"></video>
+                    <img   id="preview-img"   src="" alt="Preview"  style="display:none;">
+                    <video id="preview-video" controls              style="display:none;"></video>
                 </div>
                 <input type="file" id="fileInput" accept="image/*,video/*" onchange="handleFile(this)">
                 <p id="upload-text">📷 Clique para escolher uma foto ou vídeo</p>
             </div>
 
+            <!-- Data com calendário -->
             <div class="form-group">
                 <label>Data</label>
                 <div class="date-input-wrapper">
-                    <input type="text" id="newDate" placeholder="DD/MM/AA" maxlength="8" oninput="formatDateInput(this)">
+                    <input type="text" id="newDate"    placeholder="DD/MM/AA" maxlength="8" oninput="formatDateInput(this)">
                     <input type="date" id="datePicker" onchange="syncDateFromPicker()">
                     <button class="btn-calendar" onclick="document.getElementById('datePicker').showPicker()" title="Abrir calendário">📅</button>
                 </div>
             </div>
 
+            <!-- Legenda -->
             <div class="form-group">
                 <label>Legenda</label>
                 <textarea id="newCaption" placeholder="Escreva algo especial sobre este momento..."></textarea>
             </div>
 
-            <button class="btn-add" id="btnSave" onclick="savePhoto()">💕 Salvar Memória</button>
-            <button class="btn-cancel" onclick="closeModal('formModal')">Cancelar</button>
+            <button class="btn-add"    id="btnSave" onclick="savePhoto()">💕 Salvar Memória</button>
+            <button class="btn-cancel"              onclick="closeModal('formModal')">Cancelar</button>
         </div>
     </div>
 

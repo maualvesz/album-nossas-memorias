@@ -1,13 +1,18 @@
 [build]
-  command = "npm install"
+  command   = "npm install"
   functions = "netlify/functions"
-  publish = "public"
+  publish   = "public"
 
 [dev]
-  command = "npm install && echo 'Dev server ready'"
-  port = 8888
+  command = "echo 'Netlify Dev pronto'"
+  port    = 8888
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from   = "/api/*"
+  to     = "/.netlify/functions/:splat"
+  status = 200
+
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
   status = 200

@@ -1,15 +1,10 @@
 {
-  "name": "album_netlify",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "album-nossas-memorias",
+  "version": "2.0.0",
+  "description": "Álbum de memórias — Cloudinary + MongoDB + Netlify Functions",
   "scripts": {
-    "build": "echo 'Build complete'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "echo 'Build OK'"
   },
-  "keywords": [],
-  "author": "Nossa História",
-  "license": "ISC",
-  "description": "Álbum de memórias permanente com Netlify",
   "dependencies": {
     "mongodb": "^5.9.0"
   }
