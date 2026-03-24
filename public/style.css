@@ -202,6 +202,103 @@ body::before {
     font-size: 1.1rem;
 }
 
+/* ========== CONTROLES DE FILTRO ========== */
+.controls-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 2px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 30px rgba(139,58,80,0.08);
+    border: 1px solid rgba(200,99,122,0.1);
+}
+
+.search-month {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+}
+
+.search-month label {
+    color: var(--rose);
+    font-weight: 600;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+.search-month input[type="month"] {
+    padding: 0.5rem 0.8rem;
+    border: 1px solid rgba(200,99,122,0.3);
+    border-radius: 2px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    color: var(--text);
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.search-month input[type="month"]:focus {
+    outline: none;
+    border-color: var(--rose);
+}
+
+.btn-clear-filter {
+    padding: 0.4rem 0.8rem;
+    background: none;
+    border: 1px solid rgba(200,99,122,0.3);
+    color: var(--text-light);
+    border-radius: 2px;
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.btn-clear-filter:hover { 
+    border-color: var(--rose); 
+    color: var(--rose); 
+}
+
+.sort-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sort-controls label { 
+    color: var(--text-light); 
+    font-size: 0.9rem; 
+}
+
+.btn-sort {
+    padding: 0.45rem 1rem;
+    background: none;
+    border: 1px solid rgba(200,99,122,0.3);
+    color: var(--text-light);
+    border-radius: 2px;
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.btn-sort:hover { 
+    border-color: var(--rose); 
+    color: var(--rose); 
+}
+
+.btn-sort.active { 
+    background: var(--rose); 
+    border-color: var(--rose); 
+    color: white; 
+}
+
 /* ========== PHOTO GRID ========== */
 .photo-grid {
     display: grid;
@@ -251,6 +348,42 @@ body::before {
 
 .photo-card:hover .photo-frame img {
     transform: scale(1.05);
+}
+
+/* ========== VIDEO THUMB ========== */
+.video-thumb {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    padding-bottom: 120%;
+    background: #111;
+}
+
+.video-thumb video {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.play-overlay {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 56px; height: 56px;
+    background: rgba(200,99,122,0.85);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    font-size: 1.4rem;
+    transition: transform 0.2s, background 0.2s;
+    pointer-events: none;
+}
+
+.video-thumb:hover .play-overlay { 
+    transform: translate(-50%, -50%) scale(1.1); 
+    background: var(--rose); 
 }
 
 .photo-info {
@@ -347,6 +480,52 @@ body::before {
     color: var(--text-light);
 }
 
+/* ========== EMPTY STATE ========== */
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-light);
+    font-style: italic;
+    font-size: 1.1rem;
+}
+
+/* ========== FAB BUTTON ========== */
+.fab-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 500;
+    background: linear-gradient(135deg, var(--rose), var(--rose-dark));
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 6px 24px rgba(200,99,122,0.45);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    transition: all 0.25s;
+}
+
+.fab-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(200,99,122,0.5);
+}
+
+.fab-icon { 
+    font-size: 1.5rem; 
+    line-height: 1; 
+    font-weight: bold; 
+}
+
+.fab-label { 
+    font-size: 0.95rem; 
+}
+
 /* ========== MODAIS ========== */
 .modal, .add-modal {
     position: fixed;
@@ -373,6 +552,9 @@ body::before {
     text-align: center;
     transform: scale(0.9);
     transition: transform 0.4s ease;
+    background: white;
+    border-radius: 2px;
+    padding: 2rem;
 }
 
 .modal.open .modal-inner, .add-modal.open .add-modal-inner {
@@ -380,9 +562,8 @@ body::before {
 }
 
 .add-modal-inner {
-    background: var(--cream);
-    padding: 3rem;
     max-width: 500px;
+    text-align: left;
 }
 
 .modal-img {
@@ -404,7 +585,8 @@ body::before {
 .modal-caption {
     font-size: 1.4rem;
     font-style: italic;
-    color: #fff;
+    color: var(--text);
+    text-align: center;
 }
 
 .modal-close {
@@ -451,15 +633,20 @@ body::before {
     font-size: 2rem;
     color: var(--text);
     margin-bottom: 0.5rem;
+    text-align: center;
 }
 
-.add-modal-inner h3 em { color: var(--rose); font-style: italic; }
+.add-modal-inner h3 em { 
+    color: var(--rose); 
+    font-style: italic; 
+}
 
 .add-modal-inner p {
     font-style: italic;
     color: var(--text-light);
     margin-bottom: 2rem;
     font-size: 1rem;
+    text-align: center;
 }
 
 .form-group {
@@ -488,7 +675,39 @@ body::before {
     transition: border-color 0.2s;
 }
 
-.form-group input:focus, .form-group textarea:focus { border-color: var(--rose); }
+.form-group input:focus, .form-group textarea:focus { 
+    border-color: var(--rose); 
+}
+
+.date-input-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.date-input-wrapper input[type="text"] {
+    flex: 1;
+}
+
+.date-input-wrapper input[type="date"] {
+    display: none;
+}
+
+.btn-calendar {
+    padding: 0.8rem 1rem;
+    background: rgba(200,99,122,0.1);
+    border: 1px solid rgba(200,99,122,0.3);
+    color: var(--rose);
+    cursor: pointer;
+    border-radius: 1px;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.btn-calendar:hover {
+    background: rgba(200,99,122,0.2);
+    border-color: var(--rose);
+}
 
 .upload-area {
     border: 2px dashed var(--rose-light);
@@ -501,12 +720,37 @@ body::before {
     background: rgba(242,184,198,0.05);
 }
 
-.upload-area:hover { border-color: var(--rose); background: rgba(242,184,198,0.1); }
-.upload-area input { display: none; }
-.upload-area p { color: var(--text-light); font-style: italic; margin-top: 0.5rem; font-size: 0.95rem; }
+.upload-area:hover { 
+    border-color: var(--rose); 
+    background: rgba(242,184,198,0.1); 
+}
 
-#preview-container { display: none; margin-bottom: 1rem; }
-#preview-img { max-height: 150px; border-radius: 2px; }
+.upload-area input { 
+    display: none; 
+}
+
+.upload-area p { 
+    color: var(--text-light); 
+    font-style: italic; 
+    margin-top: 0.5rem; 
+    font-size: 0.95rem; 
+}
+
+#preview-container { 
+    display: none; 
+    margin-bottom: 1rem; 
+}
+
+#preview-img { 
+    max-height: 150px; 
+    border-radius: 2px; 
+}
+
+#preview-video {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 2px;
+}
 
 .btn-add {
     background: var(--rose);
@@ -522,7 +766,9 @@ body::before {
     width: 100%;
 }
 
-.btn-add:hover { background: var(--rose-dark); }
+.btn-add:hover { 
+    background: var(--rose-dark); 
+}
 
 .btn-cancel {
     background: none;
@@ -538,7 +784,10 @@ body::before {
     transition: all 0.2s;
 }
 
-.btn-cancel:hover { border-color: var(--rose); color: var(--rose); }
+.btn-cancel:hover { 
+    border-color: var(--rose); 
+    color: var(--rose); 
+}
 
 /* ========== FOOTER ========== */
 footer {
@@ -563,14 +812,46 @@ footer .heart {
     60% { transform: scale(1.1); }
 }
 
-footer p { font-style: italic; color: var(--text-light); font-size: 1.1rem; }
+footer p { 
+    font-style: italic; 
+    color: var(--text-light); 
+    font-size: 1.1rem; 
+}
 
 /* ========== RESPONSIVO ========== */
 @media (max-width: 600px) {
-    .photo-grid { grid-template-columns: 1fr; }
-    .add-modal-inner { padding: 2rem 1.5rem; }
-    .hero-title { font-size: 2.5rem; }
-    .section-header h2 { font-size: 2rem; }
-    .modal-nav { flex-direction: column; }
-    .modal-nav button { width: 100%; }
+    .photo-grid { 
+        grid-template-columns: 1fr; 
+    }
+    .add-modal-inner { 
+        padding: 2rem 1.5rem; 
+    }
+    .hero-title { 
+        font-size: 2.5rem; 
+    }
+    .section-header h2 { 
+        font-size: 2rem; 
+    }
+    .modal-nav { 
+        flex-direction: column; 
+    }
+    .modal-nav button { 
+        width: 100%; 
+    }
+    .controls-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .search-month {
+        flex-direction: column;
+    }
+    .sort-controls {
+        flex-direction: column;
+    }
+    .fab-btn {
+        bottom: 1.5rem;
+        right: 1.5rem;
+        padding: 0.8rem 1.2rem;
+        font-size: 0.9rem;
+    }
 }
