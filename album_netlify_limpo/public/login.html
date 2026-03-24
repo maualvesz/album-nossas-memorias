@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Nossa História 💕</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --rose: #c8637a;
+            --gold: #d4af37;
+            --cream: #faf8f3;
+            --dark: #2d2d2d;
+            --text-light: #8b7b7b;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #faf8f3 0%, #f5f1e8 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        .login-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 2px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .login-header {
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--rose);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: var(--text-light);
+            font-style: italic;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--rose);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 2px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--rose);
+            box-shadow: 0 0 5px rgba(200, 99, 122, 0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--rose), #a94d5e);
+            color: white;
+            border: none;
+            border-radius: 2px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(200, 99, 122, 0.3);
+        }
+
+        .error {
+            color: #d32f2f;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .divider {
+            margin: 2rem 0;
+            color: var(--text-light);
+        }
+
+        .ornament {
+            color: var(--gold);
+            font-size: 1.5rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="ornament">✦ ✦ ✦</div>
+            <h1>Nossa <em style="color: var(--rose); font-style: italic;">História</em></h1>
+            <p>Acesse nosso álbum de memórias</p>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="username">Código de Usuário</label>
+                <input type="text" id="username" placeholder="Digite o código" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" placeholder="Digite a senha" required>
+            </div>
+
+            <div class="error" id="error"></div>
+
+            <button type="submit" class="login-btn">💕 Entrar</button>
+        </form>
+
+        <div class="divider">🌹</div>
+    </div>
+
+    <script>
+        const VALID_USERNAME = '1';
+        const VALID_PASSWORD = '170126';
+
+        function handleLogin(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error');
+
+            if (username === VALID_USERNAME && password === VALID_PASSWORD) {
+                localStorage.setItem('auth_token', 'authenticated');
+                localStorage.setItem('login_time', new Date().getTime());
+                window.location.href = 'index.html';
+            } else {
+                errorDiv.textContent = '❌ Código ou senha incorretos!';
+                errorDiv.style.display = 'block';
+                document.getElementById('password').value = '';
+            }
+        }
+
+        // Se já estiver autenticado, redireciona
+        if (localStorage.getItem('auth_token')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
