@@ -39,17 +39,34 @@
             <p>Cada instante, eternamente guardado aqui ✨</p>
         </div>
 
-        <!-- Filtros -->
+        <!-- Filtros Reorganizados -->
         <div class="controls-bar">
-            <div class="search-month">
-                <label for="filterMonth">🔍 Filtrar por mês:</label>
-                <input type="month" id="filterMonth" onchange="applyFilters()">
-                <button class="btn-clear-filter" onclick="clearMonthFilter()">✕ Limpar</button>
+            <!-- Filtro por Mês -->
+            <div class="filter-group">
+                <label for="filterMonth" class="filter-label">📅 Mês</label>
+                <div class="filter-input-wrapper">
+                    <input type="month" id="filterMonth" onchange="applyFilters()" class="filter-input">
+                    <button class="btn-clear-filter" onclick="clearMonthFilter()" title="Limpar filtro de mês">✕</button>
+                </div>
             </div>
-            <div class="sort-controls">
-                <label>Ordenar:</label>
-                <button class="btn-sort active" id="btnNewest" onclick="setSortOrder('newest')">Mais recentes</button>
-                <button class="btn-sort"        id="btnOldest" onclick="setSortOrder('oldest')">Mais antigas</button>
+
+            <!-- Filtro de Tipo de Mídia -->
+            <div class="filter-group">
+                <label class="filter-label">🎬 Tipo</label>
+                <div class="filter-buttons">
+                    <button class="btn-filter active" id="btnAll" onclick="setMediaFilter('all')" title="Mostrar tudo">Tudo</button>
+                    <button class="btn-filter" id="btnPhotos" onclick="setMediaFilter('photos')" title="Apenas fotos">📷 Fotos</button>
+                    <button class="btn-filter" id="btnVideos" onclick="setMediaFilter('videos')" title="Apenas vídeos">🎥 Vídeos</button>
+                </div>
+            </div>
+
+            <!-- Ordenação -->
+            <div class="filter-group">
+                <label class="filter-label">📊 Ordem</label>
+                <div class="filter-buttons">
+                    <button class="btn-filter active" id="btnNewest" onclick="setSortOrder('newest')" title="Mais recentes primeiro">Recentes</button>
+                    <button class="btn-filter" id="btnOldest" onclick="setSortOrder('oldest')" title="Mais antigas primeiro">Antigas</button>
+                </div>
             </div>
         </div>
 

@@ -10,6 +10,7 @@ let allPhotos  = [];
 let currentIndex = 0;
 let editIndex    = -1;
 let sortOrder    = 'newest';
+let mediaFilter  = 'all';  /* 'all', 'photos', 'videos' */
 
 // Arquivo selecionado (objeto File) — nunca lemos como base64
 let selectedFile = null;
@@ -106,6 +107,14 @@ function setSortOrder(order) {
   renderPhotos();
 }
 
+function setMediaFilter(filter) {
+  mediaFilter = filter;
+  document.getElementById('btnAll').classList.toggle('active', filter === 'all');
+  document.getElementById('btnPhotos').classList.toggle('active', filter === 'photos');
+  document.getElementById('btnVideos').classList.toggle('active', filter === 'videos');
+  renderPhotos();
+}
+
 function applyFilters() { renderPhotos(); }
 
 function clearMonthFilter() {
@@ -123,6 +132,12 @@ function getFilteredAndSortedPhotos() {
       const d = parseDate(p.date);
       return d.getFullYear() === fy && d.getMonth() + 1 === fm;
     });
+  }
+
+  if (mediaFilter === 'photos') {
+    photos = photos.filter(p => p.type !== 'video');
+  } else if (mediaFilter === 'videos') {
+    photos = photos.filter(p => p.type === 'video');
   }
 
   photos.sort((a, b) => {
