@@ -4,39 +4,26 @@ let allPhotos = [];
 let currentIndex = 0;
 let editIndex = -1;
 let newImageSrc = null;
-let useLocalStorage = false;
 
 // ========== CARREGAMENTO DE DADOS ==========
 async function loadPhotos() {
     try {
+        console.log('📥 Carregando fotos da API...');
         const response = await fetch(API_URL);
-        if (response.ok) {
-            allPhotos = await response.json();
-            useLocalStorage = false;
-        } else {
-            console.warn('API não disponível, usando localStorage');
-            loadPhotosFromLocalStorage();
-            useLocalStorage = true;
+        
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
         }
+        
+        const data = await response.json();
+        console.log('✅ Fotos carregadas com sucesso:', data);
+        allPhotos = data || [];
     } catch (error) {
-        console.warn('API não disponível, usando localStorage:', error);
-        loadPhotosFromLocalStorage();
-        useLocalStorage = true;
-    }
-    renderPhotos();
-}
-
-function loadPhotosFromLocalStorage() {
-    const savedPhotos = localStorage.getItem('album_photos');
-    if (savedPhotos) {
-        allPhotos = JSON.parse(savedPhotos);
-    } else {
+        console.error('❌ Erro ao carregar fotos:', error);
+        alert('❌ Erro ao carregar fotos. Verifique sua conexão.');
         allPhotos = [];
     }
-}
-
-function savePhotosToLocalStorage() {
-    localStorage.setItem('album_photos', JSON.stringify(allPhotos));
+    renderPhotos();
 }
 
 // ========== RENDERIZAÇÃO ==========
@@ -120,7 +107,6 @@ function openAddModal() {
     document.getElementById('formSubtitle').textContent = 'Adicione uma foto especial ao nosso álbum';
     document.getElementById('btnSave').textContent = '💕 Adicionar ao Álbum';
     
-    // Limpar campos
     document.getElementById('fileInput').value = '';
     document.getElementById('newDate').value = '';
     document.getElementById('newCaption').value = '';
@@ -186,64 +172,39 @@ async function savePhoto() {
     btnSave.disabled = true;
 
     try {
-        if (useLocalStorage) {
-            // Usar localStorage
-            const { v4: uuidv4 } = { v4: () => 'photo_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9) };
-            
-            if (editIndex === -1) {
-                // Adicionar nova
-                allPhotos.unshift({ 
-                    id: uuidv4(), 
-                    src: newImageSrc, 
-                    date, 
-                    caption,
-                    createdAt: new Date().toISOString()
-                });
-            } else {
-                // Editar existente
-                allPhotos[editIndex] = { 
-                    ...allPhotos[editIndex],
-                    src: newImageSrc, 
-                    date, 
-                    caption,
-                    updatedAt: new Date().toISOString()
-                };
-            }
-            
-            savePhotosToLocalStorage();
-            await loadPhotos();
-            closeModal('formModal');
+        let response;
+        
+        if (editIndex === -1) {
+            console.log('📤 Enviando nova foto para a API...');
+            response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ src: newImageSrc, date, caption })
+            });
         } else {
-            // Usar API
-            let response;
-            if (editIndex === -1) {
-                // Adicionar nova
-                response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ src: newImageSrc, date, caption })
-                });
-            } else {
-                // Editar existente
-                const photoId = allPhotos[editIndex].id;
-                response = await fetch(`${API_URL}?id=${photoId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ src: newImageSrc, date, caption })
-                });
-            }
-
-            if (response.ok) {
-                await loadPhotos();
-                closeModal('formModal');
-            } else {
-                const error = await response.json();
-                alert('Erro ao salvar foto: ' + (error.error || 'Tente novamente'));
-            }
+            const photoId = allPhotos[editIndex].id;
+            console.log('✏️ Editando foto:', photoId);
+            response = await fetch(`${API_URL}?id=${photoId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ src: newImageSrc, date, caption })
+            });
         }
+
+        console.log('📊 Resposta da API:', response.status, response.statusText);
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `Erro HTTP ${response.status}`);
+        }
+
+        console.log('✅ Foto salva com sucesso!');
+        await loadPhotos();
+        closeModal('formModal');
+        alert('✅ Foto salva com sucesso!');
     } catch (error) {
-        console.error('Erro ao salvar foto:', error);
-        alert('Erro ao salvar foto. Tente novamente.');
+        console.error('❌ Erro ao salvar foto:', error);
+        alert(`❌ Erro ao salvar foto: ${error.message}`);
     } finally {
         btnSave.textContent = originalText;
         btnSave.disabled = false;
@@ -253,27 +214,24 @@ async function savePhoto() {
 async function deletePhoto(photoId) {
     if (confirm('Tem certeza que deseja excluir esta memória? 🌹')) {
         try {
-            if (useLocalStorage) {
-                // Usar localStorage
-                allPhotos = allPhotos.filter(p => p.id !== photoId);
-                savePhotosToLocalStorage();
-                await loadPhotos();
-            } else {
-                // Usar API
-                const response = await fetch(`${API_URL}?id=${photoId}`, {
-                    method: 'DELETE'
-                });
+            console.log('🗑️ Deletando foto:', photoId);
+            const response = await fetch(`${API_URL}?id=${photoId}`, {
+                method: 'DELETE'
+            });
 
-                if (response.ok) {
-                    await loadPhotos();
-                } else {
-                    const error = await response.json();
-                    alert('Erro ao excluir foto: ' + (error.error || 'Tente novamente'));
-                }
+            console.log('📊 Resposta da API:', response.status, response.statusText);
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `Erro HTTP ${response.status}`);
             }
+
+            console.log('✅ Foto deletada com sucesso!');
+            await loadPhotos();
+            alert('✅ Foto excluída com sucesso!');
         } catch (error) {
-            console.error('Erro ao excluir foto:', error);
-            alert('Erro ao excluir foto. Tente novamente.');
+            console.error('❌ Erro ao excluir foto:', error);
+            alert(`❌ Erro ao excluir foto: ${error.message}`);
         }
     }
 }
@@ -326,6 +284,7 @@ function logout() {
 
 // ========== INICIALIZAÇÃO ==========
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('🎉 Página carregada. Iniciando...');
     createPetals();
     loadPhotos();
 });

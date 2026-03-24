@@ -11,8 +11,6 @@
   "license": "ISC",
   "description": "Álbum de memórias permanente com Netlify",
   "dependencies": {
-    "dotenv": "^17.3.1",
-    "mongodb": "^7.1.0",
-    "uuid": "^13.0.0"
+    "mongodb": "^5.9.0"
   }
 }

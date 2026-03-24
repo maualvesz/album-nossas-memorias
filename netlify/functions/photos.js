@@ -1,11 +1,15 @@
 const { MongoClient } = require('mongodb');
-const { v4: uuidv4 } = require('uuid');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const DB_NAME = 'nossa_historia';
 const COLLECTION_NAME = 'photos';
 
 let cachedClient = null;
+
+// Função para gerar ID único simples
+function generateId() {
+  return 'photo_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+}
 
 async function connectToDatabase() {
   if (cachedClient && cachedClient.topology && cachedClient.topology.isConnected()) {
@@ -26,11 +30,11 @@ async function connectToDatabase() {
     });
 
     await client.connect();
-    console.log('Conectado ao MongoDB com sucesso');
+    console.log('✅ Conectado ao MongoDB com sucesso');
     cachedClient = client;
     return client;
   } catch (error) {
-    console.error('Erro ao conectar ao MongoDB:', error.message);
+    console.error('❌ Erro ao conectar ao MongoDB:', error.message);
     cachedClient = null;
     throw new Error(`Falha ao conectar ao MongoDB: ${error.message}`);
   }
@@ -43,9 +47,10 @@ async function getPhotos() {
     const collection = db.collection(COLLECTION_NAME);
     
     const photos = await collection.find({}).sort({ createdAt: -1 }).toArray();
+    console.log(`✅ ${photos.length} fotos carregadas`);
     return photos;
   } catch (error) {
-    console.error('Erro ao buscar fotos:', error);
+    console.error('❌ Erro ao buscar fotos:', error);
     throw error;
   }
 }
@@ -57,15 +62,16 @@ async function addPhoto(photoData) {
     const collection = db.collection(COLLECTION_NAME);
     
     const newPhoto = {
-      id: uuidv4(),
+      id: generateId(),
       ...photoData,
       createdAt: new Date(),
     };
     
     await collection.insertOne(newPhoto);
+    console.log('✅ Foto adicionada com sucesso');
     return newPhoto;
   } catch (error) {
-    console.error('Erro ao adicionar foto:', error);
+    console.error('❌ Erro ao adicionar foto:', error);
     throw error;
   }
 }
@@ -90,9 +96,10 @@ async function updatePhoto(photoId, photoData) {
       throw new Error('Foto não encontrada');
     }
     
+    console.log('✅ Foto atualizada com sucesso');
     return result;
   } catch (error) {
-    console.error('Erro ao atualizar foto:', error);
+    console.error('❌ Erro ao atualizar foto:', error);
     throw error;
   }
 }
@@ -109,15 +116,15 @@ async function deletePhoto(photoId) {
       throw new Error('Foto não encontrada');
     }
     
+    console.log('✅ Foto deletada com sucesso');
     return result;
   } catch (error) {
-    console.error('Erro ao deletar foto:', error);
+    console.error('❌ Erro ao deletar foto:', error);
     throw error;
   }
 }
 
 exports.handler = async (event, context) => {
-  // Permitir que a função continue rodando após a resposta
   context.callbackWaitsForEmptyEventLoop = false;
 
   const headers = {
@@ -127,7 +134,6 @@ exports.handler = async (event, context) => {
     'Content-Type': 'application/json',
   };
 
-  // Handle CORS preflight
   if (event.httpMethod === 'OPTIONS') {
     return {
       statusCode: 200,
@@ -140,7 +146,6 @@ exports.handler = async (event, context) => {
     let response;
 
     if (event.httpMethod === 'GET') {
-      // GET - Obter todas as fotos
       const photos = await getPhotos();
       response = {
         statusCode: 200,
@@ -148,7 +153,6 @@ exports.handler = async (event, context) => {
         body: JSON.stringify(photos),
       };
     } else if (event.httpMethod === 'POST') {
-      // POST - Adicionar nova foto
       if (!event.body) {
         return {
           statusCode: 400,
@@ -185,7 +189,6 @@ exports.handler = async (event, context) => {
         body: JSON.stringify(newPhoto),
       };
     } else if (event.httpMethod === 'PUT') {
-      // PUT - Editar foto
       const queryParams = event.queryStringParameters || {};
       const { id } = queryParams;
 
@@ -225,7 +228,6 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({ message: 'Foto atualizada com sucesso' }),
       };
     } else if (event.httpMethod === 'DELETE') {
-      // DELETE - Excluir foto
       const queryParams = event.queryStringParameters || {};
       const { id } = queryParams;
 
@@ -253,13 +255,12 @@ exports.handler = async (event, context) => {
 
     return response;
   } catch (error) {
-    console.error('Erro na função:', error);
+    console.error('❌ Erro na função:', error);
     return {
       statusCode: 500,
       headers,
       body: JSON.stringify({ 
-        error: error.message || 'Erro interno do servidor',
-        details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        error: error.message || 'Erro interno do servidor'
       }),
     };
   }

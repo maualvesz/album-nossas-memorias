@@ -6,119 +6,55 @@
     <title>Login - Nossa História 💕</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
             --rose: #c8637a;
-            --rose-light: #f2b8c6;
-            --rose-dark: #8b3a50;
-            --cream: #fdf6f0;
-            --gold: #c9a96e;
-            --text: #3a2030;
-            --text-light: #7a5060;
+            --gold: #d4af37;
+            --cream: #faf8f3;
+            --dark: #2d2d2d;
+            --text-light: #8b7b7b;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--cream);
             font-family: 'Cormorant Garamond', serif;
-            color: var(--text);
-            overflow-x: hidden;
-            min-height: 100vh;
+            background: linear-gradient(135deg, #faf8f3 0%, #f5f1e8 100%);
             display: flex;
-            align-items: center;
             justify-content: center;
-        }
-
-        /* Animated background */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: 
-                radial-gradient(ellipse at 20% 50%, rgba(200,99,122,0.08) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 20%, rgba(201,169,110,0.06) 0%, transparent 50%),
-                radial-gradient(ellipse at 60% 80%, rgba(200,99,122,0.05) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* Floating petals */
-        .petals-container {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            overflow: hidden;
-        }
-
-        .petal {
-            position: absolute;
-            top: -20px;
-            font-size: 1.2rem;
-            animation: fall linear infinite;
-            opacity: 0.6;
-        }
-
-        @keyframes fall {
-            0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.6; }
-            90% { opacity: 0.3; }
-            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+            align-items: center;
+            min-height: 100vh;
+            color: var(--dark);
         }
 
         .login-container {
-            position: relative;
-            z-index: 2;
-            background: #fff;
+            background: white;
             padding: 3rem;
             border-radius: 2px;
-            box-shadow: 0 10px 40px rgba(139,58,80,0.15);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
             max-width: 400px;
             width: 90%;
             text-align: center;
-            animation: slideUp 0.6s ease;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .login-header {
             margin-bottom: 2rem;
         }
 
-        .login-ornament {
-            font-size: 2rem;
-            color: var(--rose);
-            opacity: 0.6;
-            letter-spacing: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .login-title {
+        .login-header h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            color: var(--text);
+            font-size: 2.5rem;
+            color: var(--rose);
             margin-bottom: 0.5rem;
         }
 
-        .login-title em {
-            font-style: italic;
-            color: var(--rose);
-        }
-
-        .login-subtitle {
-            font-style: italic;
+        .login-header p {
             color: var(--text-light);
-            font-size: 0.95rem;
-            margin-bottom: 1rem;
-        }
-
-        .divider {
-            height: 1px;
-            background: linear-gradient(to right, transparent, var(--gold), transparent);
-            margin: 1.5rem 0;
+            font-style: italic;
+            font-size: 1rem;
         }
 
         .form-group {
@@ -128,196 +64,119 @@
 
         .form-group label {
             display: block;
-            font-size: 0.8rem;
-            letter-spacing: 0.15rem;
-            color: var(--text-light);
             margin-bottom: 0.5rem;
-            text-transform: uppercase;
+            color: var(--rose);
+            font-weight: 600;
+            font-size: 1rem;
         }
 
         .form-group input {
             width: 100%;
-            padding: 0.9rem 1rem;
-            border: 1px solid rgba(200,99,122,0.3);
-            background: #fff;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 2px;
             font-family: 'Cormorant Garamond', serif;
             font-size: 1rem;
-            color: var(--text);
-            border-radius: 1px;
-            outline: none;
-            transition: border-color 0.2s;
+            transition: border-color 0.3s;
         }
 
         .form-group input:focus {
+            outline: none;
             border-color: var(--rose);
-            box-shadow: 0 0 0 2px rgba(200,99,122,0.1);
+            box-shadow: 0 0 5px rgba(200, 99, 122, 0.2);
         }
 
-        .btn-login {
-            background: var(--rose);
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--rose), #a94d5e);
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.1rem;
-            letter-spacing: 0.1rem;
+            border-radius: 2px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
             cursor: pointer;
-            transition: background 0.2s;
-            border-radius: 1px;
-            width: 100%;
-            text-transform: uppercase;
+            transition: all 0.3s;
+            margin-top: 1rem;
         }
 
-        .btn-login:hover {
-            background: var(--rose-dark);
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(200, 99, 122, 0.3);
         }
 
-        .btn-login:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .error-message {
+        .error {
             color: #d32f2f;
             font-size: 0.9rem;
-            margin-top: 1rem;
+            margin-top: 0.5rem;
             display: none;
         }
 
-        .error-message.show {
-            display: block;
-            animation: shake 0.3s;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        .footer-text {
-            font-size: 0.85rem;
+        .divider {
+            margin: 2rem 0;
             color: var(--text-light);
-            margin-top: 2rem;
-            font-style: italic;
+        }
+
+        .ornament {
+            color: var(--gold);
+            font-size: 1.5rem;
+            margin: 1rem 0;
         }
     </style>
 </head>
 <body>
-    <!-- Petalas Animadas -->
-    <div class="petals-container" id="petals"></div>
-
-    <!-- Login Container -->
     <div class="login-container">
         <div class="login-header">
-            <div class="login-ornament">✦ ✦ ✦</div>
-            <h1 class="login-title">Bem-vindo ao Nosso <em>Álbum</em></h1>
-            <p class="login-subtitle">Acesso exclusivo para memórias especiais</p>
+            <div class="ornament">✦ ✦ ✦</div>
+            <h1>Nossa <em style="color: var(--rose); font-style: italic;">História</em></h1>
+            <p>Acesse nosso álbum de memórias</p>
         </div>
-
-        <div class="divider"></div>
 
         <form id="loginForm" onsubmit="handleLogin(event)">
             <div class="form-group">
                 <label for="username">Código de Usuário</label>
-                <input 
-                    type="text" 
-                    id="username" 
-                    placeholder="Digite seu código" 
-                    required
-                    autocomplete="off"
-                >
+                <input type="text" id="username" placeholder="Digite o código" required>
             </div>
 
             <div class="form-group">
                 <label for="password">Senha</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    placeholder="Digite sua senha" 
-                    required
-                    autocomplete="off"
-                >
+                <input type="password" id="password" placeholder="Digite a senha" required>
             </div>
 
-            <button type="submit" class="btn-login" id="btnLogin">
-                💕 Entrar
-            </button>
+            <div class="error" id="error"></div>
 
-            <div class="error-message" id="errorMessage"></div>
+            <button type="submit" class="login-btn">💕 Entrar</button>
         </form>
 
-        <p class="footer-text">Cada memória guardada com amor 🌹</p>
+        <div class="divider">🌹</div>
     </div>
 
     <script>
-        // Credenciais (você pode mudar aqui se necessário)
         const VALID_USERNAME = '1';
         const VALID_PASSWORD = '170126';
 
-        function createPetals() {
-            const container = document.getElementById('petals');
-            const symbols = ['🌸', '🌹', '✨', '💖', '🍂'];
-            
-            for (let i = 0; i < 10; i++) {
-                const petal = document.createElement('div');
-                petal.className = 'petal';
-                petal.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-                petal.style.left = Math.random() * 100 + 'vw';
-                petal.style.fontSize = (0.8 + Math.random() * 1.2) + 'rem';
-                petal.style.animationDuration = (8 + Math.random() * 12) + 's';
-                petal.style.animationDelay = (Math.random() * 10) + 's';
-                container.appendChild(petal);
-            }
-        }
-
         function handleLogin(event) {
             event.preventDefault();
-            
+
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            const errorMessage = document.getElementById('errorMessage');
-            const btnLogin = document.getElementById('btnLogin');
+            const errorDiv = document.getElementById('error');
 
-            // Limpar mensagem de erro anterior
-            errorMessage.classList.remove('show');
-
-            // Validar credenciais
             if (username === VALID_USERNAME && password === VALID_PASSWORD) {
-                // Salvar token de autenticação no localStorage
-                localStorage.setItem('auth_token', 'authenticated_' + Date.now());
-                localStorage.setItem('login_time', new Date().toISOString());
-                
-                // Redirecionar para o álbum
+                localStorage.setItem('auth_token', 'authenticated');
+                localStorage.setItem('login_time', new Date().getTime());
                 window.location.href = 'index.html';
             } else {
-                // Mostrar erro
-                errorMessage.textContent = '❌ Código de usuário ou senha incorretos. Tente novamente.';
-                errorMessage.classList.add('show');
-                
-                // Limpar campos
-                document.getElementById('username').value = '';
+                errorDiv.textContent = '❌ Código ou senha incorretos!';
+                errorDiv.style.display = 'block';
                 document.getElementById('password').value = '';
-                document.getElementById('username').focus();
             }
         }
 
-        // Inicializar petalas ao carregar
-        document.addEventListener('DOMContentLoaded', () => {
-            createPetals();
-            
-            // Se já está autenticado, redirecionar para o álbum
-            if (localStorage.getItem('auth_token')) {
-                window.location.href = 'index.html';
-            }
-        });
-
-        // Permitir login ao pressionar Enter
-        document.getElementById('loginForm').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                handleLogin(e);
-            }
-        });
+        // Se já estiver autenticado, redireciona
+        if (localStorage.getItem('auth_token')) {
+            window.location.href = 'index.html';
+        }
     </script>
 </body>
 </html>

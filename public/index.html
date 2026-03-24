@@ -36,7 +36,6 @@
         </div>
 
         <div class="photo-grid" id="photoGrid">
-            <!-- As fotos serão injetadas pelo JavaScript -->
             <div class="add-photo-card" onclick="openAddModal()">
                 <div class="add-icon">📷</div>
                 <h3>Adicionar Foto</h3>
@@ -97,7 +96,6 @@
     </div>
 
     <script>
-        // Verificar se o usuário está autenticado
         if (!localStorage.getItem('auth_token')) {
             window.location.href = 'login.html';
         }
