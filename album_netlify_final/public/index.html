@@ -35,21 +35,14 @@
             <p>Cada instante, eternamente guardado aqui ✨</p>
         </div>
 
-        <!-- Controles: Busca por mês + Filtro de ordenação -->
-        <div class="controls-bar">
-            <div class="search-month">
-                <label for="filterMonth">🔍 Filtrar por mês:</label>
-                <input type="month" id="filterMonth" onchange="applyFilters()">
-                <button class="btn-clear-filter" onclick="clearMonthFilter()">✕ Limpar</button>
-            </div>
-            <div class="sort-controls">
-                <label>Ordenar:</label>
-                <button class="btn-sort active" id="btnNewest" onclick="setSortOrder('newest')">Mais recentes</button>
-                <button class="btn-sort" id="btnOldest" onclick="setSortOrder('oldest')">Mais antigas</button>
+        <div class="photo-grid" id="photoGrid">
+            <!-- As fotos serão injetadas pelo JavaScript -->
+            <div class="add-photo-card" onclick="openAddModal()">
+                <div class="add-icon">📷</div>
+                <h3>Adicionar Foto</h3>
+                <p>Novas memórias nos esperam</p>
             </div>
         </div>
-
-        <div class="photo-grid" id="photoGrid"></div>
     </section>
 
     <!-- Footer -->
@@ -59,52 +52,38 @@
         <button onclick="logout()" style="margin-top: 1rem; background: rgba(200,99,122,0.2); border: 1px solid rgba(200,99,122,0.4); color: var(--text-light); padding: 0.5rem 1rem; font-family: 'Cormorant Garamond', serif; cursor: pointer; border-radius: 1px; transition: all 0.2s;" onmouseover="this.style.background='rgba(200,99,122,0.3)'; this.style.color='var(--rose)'" onmouseout="this.style.background='rgba(200,99,122,0.2)'; this.style.color='var(--text-light)'">🚪 Sair</button>
     </footer>
 
-    <!-- Botão Flutuante (FAB) -->
-    <button class="fab-btn" onclick="openAddModal()" title="Adicionar foto ou vídeo">
-        <span class="fab-icon">+</span>
-        <span class="fab-label">Adicionar</span>
-    </button>
-
-    <!-- Modal Visualizar Foto/Vídeo -->
+    <!-- Modal Visualizar Foto -->
     <div class="modal" id="viewModal">
         <button class="modal-close" onclick="closeModal('viewModal')">✕</button>
         <div class="modal-inner">
-            <div id="modal-media-container">
-                <img id="modal-img" class="modal-img" src="" alt="" style="display:none;">
-                <video id="modal-video" class="modal-img" controls style="display:none;"></video>
-            </div>
+            <img id="modal-img" class="modal-img" src="" alt="">
             <p class="modal-date" id="modal-date"></p>
             <p class="modal-caption" id="modal-caption"></p>
             <div class="modal-nav">
                 <button onclick="prevPhoto()">← Anterior</button>
-                <button onclick="downloadMedia()">⬇️ Baixar</button>
+                <button onclick="downloadPhoto()">⬇️ Baixar</button>
                 <button onclick="nextPhoto()">Próxima →</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal Adicionar/Editar -->
+    <!-- Modal Adicionar/Editar Foto -->
     <div class="add-modal" id="formModal">
         <div class="add-modal-inner">
             <h3 id="formTitle">Nova <em>Memória</em></h3>
-            <p id="formSubtitle">Adicione uma foto ou vídeo especial ao nosso álbum</p>
+            <p id="formSubtitle">Adicione uma foto especial ao nosso álbum</p>
             
             <div class="upload-area" onclick="document.getElementById('fileInput').click()">
                 <div id="preview-container">
-                    <img id="preview-img" src="" alt="Preview" style="display:none;">
-                    <video id="preview-video" controls style="display:none; max-width:100%; max-height:300px; border-radius:2px;"></video>
+                    <img id="preview-img" src="" alt="Preview">
                 </div>
-                <input type="file" id="fileInput" accept="image/*,video/*" onchange="handleFile(this)">
-                <p id="upload-text">📷 Clique para escolher uma foto ou vídeo</p>
+                <input type="file" id="fileInput" accept="image/*" onchange="handleFile(this)">
+                <p id="upload-text">📷 Clique para escolher uma foto</p>
             </div>
 
             <div class="form-group">
                 <label>Data</label>
-                <div class="date-input-wrapper">
-                    <input type="text" id="newDate" placeholder="DD/MM/AA" maxlength="8" oninput="formatDateInput(this)">
-                    <input type="date" id="datePicker" onchange="syncDateFromPicker()">
-                    <button class="btn-calendar" onclick="document.getElementById('datePicker').showPicker()" title="Abrir calendário">📅</button>
-                </div>
+                <input type="text" id="newDate" placeholder="Ex: 14 de Fevereiro de 2026">
             </div>
 
             <div class="form-group">
@@ -118,6 +97,7 @@
     </div>
 
     <script>
+        // Verificar se o usuário está autenticado
         if (!localStorage.getItem('auth_token')) {
             window.location.href = 'login.html';
         }
