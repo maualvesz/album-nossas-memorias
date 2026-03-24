@@ -9,9 +9,9 @@
     --rose-light: #f2b8c6;
     --rose-dark: #8b3a50;
     --cream: #fdf6f0;
-    --gold: #c9a96e;
-    --text: #3a2030;
-    --text-light: #7a5060;
+    --gold: #b8860b;
+    --text: #2a1820;
+    --text-light: #5a3a50;
 }
 
 html {
@@ -81,7 +81,7 @@ body::before {
 .hero-ornament {
     font-size: 2rem;
     color: var(--rose);
-    opacity: 0.4;
+    opacity: 0.6;
     letter-spacing: 1rem;
     animation: pulse 3s ease-in-out infinite;
     margin-bottom: 1rem;
@@ -101,6 +101,7 @@ body::before {
     text-transform: uppercase;
     margin-bottom: 1.5rem;
     animation: fadeInUp 1s ease 0.3s both;
+    font-weight: 500;
 }
 
 .hero-title {
@@ -110,11 +111,13 @@ body::before {
     color: var(--text);
     margin-bottom: 1.5rem;
     animation: fadeInUp 1s ease 0.6s both;
+    font-weight: 700;
 }
 
 .hero-title em {
     font-style: italic;
-    color: var(--rose);
+    color: var(--rose-dark);
+    font-weight: 700;
 }
 
 .hero-divider {
@@ -138,10 +141,11 @@ body::before {
 .hero-poem {
     font-size: 1.15rem;
     font-style: italic;
-    color: var(--text-light);
+    color: var(--text);
     max-width: 500px;
     line-height: 1.8;
     animation: fadeInUp 1s ease 1.2s both;
+    font-weight: 500;
 }
 
 .scroll-hint {
@@ -189,17 +193,20 @@ body::before {
     font-size: clamp(2rem, 5vw, 3.5rem);
     color: var(--text);
     margin-bottom: 0.5rem;
+    font-weight: 700;
 }
 
 .section-header h2 em {
     font-style: italic;
-    color: var(--rose);
+    color: var(--rose-dark);
+    font-weight: 700;
 }
 
 .section-header p {
     font-style: italic;
     color: var(--text-light);
     font-size: 1.1rem;
+    font-weight: 500;
 }
 
 /* ========== CONTROLES DE FILTRO ========== */
@@ -398,13 +405,15 @@ body::before {
     text-transform: uppercase;
     color: var(--gold);
     margin-bottom: 0.3rem;
+    font-weight: 600;
 }
 
 .photo-info .caption-text {
     font-size: 1rem;
     font-style: italic;
-    color: var(--text-light);
+    color: var(--text);
     margin-bottom: 0.5rem;
+    font-weight: 500;
 }
 
 /* Action Buttons for Card */
@@ -470,14 +479,16 @@ body::before {
 .add-photo-card h3 {
     font-family: 'Playfair Display', serif;
     font-size: 1.3rem;
-    color: var(--rose);
+    color: var(--rose-dark);
     margin-bottom: 0.5rem;
+    font-weight: 700;
 }
 
 .add-photo-card p {
     font-size: 0.9rem;
     font-style: italic;
     color: var(--text-light);
+    font-weight: 500;
 }
 
 /* ========== EMPTY STATE ========== */
@@ -652,19 +663,22 @@ body::before {
     color: var(--text);
     margin-bottom: 0.5rem;
     text-align: center;
+    font-weight: 700;
 }
 
 .add-modal-inner h3 em { 
-    color: var(--rose); 
-    font-style: italic; 
+    color: var(--rose-dark); 
+    font-style: italic;
+    font-weight: 700;
 }
 
-.add-modal-inner p {
+.add-modal-inner > p {
     font-style: italic;
     color: var(--text-light);
     margin-bottom: 2rem;
     font-size: 1rem;
     text-align: center;
+    font-weight: 500;
 }
 
 .form-group {
@@ -676,8 +690,9 @@ body::before {
     display: block;
     font-size: 0.8rem;
     letter-spacing: 0.15rem;
-    color: var(--text-light);
+    color: var(--text);
     margin-bottom: 0.5rem;
+    font-weight: 600;
 }
 
 .form-group input, .form-group textarea {
@@ -832,8 +847,9 @@ footer .heart {
 
 footer p { 
     font-style: italic; 
-    color: var(--text-light); 
-    font-size: 1.1rem; 
+    color: var(--text); 
+    font-size: 1.1rem;
+    font-weight: 500;
 }
 
 /* ========== RESPONSIVO ========== */
